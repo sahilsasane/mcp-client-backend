@@ -1,0 +1,44 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv/
+.env
+venv/
+env/
+
+# Environment and secrets
+.env
+.env.local
+.env.production
+*.key
+*.pem
+credentials.json
+
+# Application data
+chat_memory.pkl
+*.log
+*.db
+*.sqlite
+
+# Configuration files with sensitive/local paths
+server_config.json
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+test/
+
+MIGRATION.md

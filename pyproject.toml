@@ -1,0 +1,21 @@
+[project]
+name = "simple-oauth2"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.116.1",
+    "httpx>=0.28.1",
+    "mcp>=1.12.1",
+    "nest-asyncio>=1.6.0",
+    "openai>=1.97.1",
+    "python-dotenv>=1.1.1",
+    "python-jose[cryptography]>=3.5.0",
+    "uvicorn>=0.35.0",
+    "google-api-python-client>=2.175.0",
+    "google-auth-httplib2>=0.2.0",
+    "google-auth-oauthlib>=1.2.2",
+    "pandas>=2.3.0",
+    "requests>=2.32.4",
+]

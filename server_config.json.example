@@ -1,0 +1,28 @@
+{
+    "mcpServers": {
+        "filesystem": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-filesystem",
+                "/path/to/your/filesystem/root"
+            ]
+        },
+        "googleWorkspaceServer": {
+            "command": "uv",
+            "args": [
+                "run",
+                "server.py"
+            ],
+            "cwd": "/path/to/your/google-workspace-server"
+        },
+        "example_server": {
+            "command": "your_command_here",
+            "args": [
+                "arg1",
+                "arg2"
+            ],
+            "cwd": "/optional/working/directory"
+        }
+    }
+}

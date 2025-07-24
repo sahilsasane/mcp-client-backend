@@ -1,0 +1,814 @@
+{
+    "info": {
+        "_postman_id": "enhanced-mcp-chatbot-api",
+        "name": "Enhanced MCP ChatBot API",
+        "description": "FastAPI backend for the Enhanced MCP ChatBot with memory",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "enhanced-mcp-chatbot"
+    },
+    "item": [
+        {
+            "name": "Root",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response has API information\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('name');",
+                            "    pm.expect(jsonData).to.have.property('version');",
+                            "    pm.expect(jsonData).to.have.property('status');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        ""
+                    ]
+                },
+                "description": "Root endpoint with API information"
+            },
+            "response": []
+        },
+        {
+            "name": "Health Check",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Health status is present\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('status');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/health",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "health"
+                    ]
+                },
+                "description": "Health check endpoint"
+            },
+            "response": []
+        },
+        {
+            "name": "Chat",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response contains required fields\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('response');",
+                            "    pm.expect(jsonData).to.have.property('session_id');",
+                            "    pm.expect(jsonData).to.have.property('timestamp');",
+                            "    pm.expect(jsonData).to.have.property('tool_calls_made');",
+                            "});",
+                            "",
+                            "// Store session_id for other requests",
+                            "var jsonData = pm.response.json();",
+                            "if (jsonData.session_id) {",
+                            "    pm.globals.set(\"session_id\", jsonData.session_id);",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"query\": \"Hello, how can you help me today?\",\n    \"session_id\": null\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/chat",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "chat"
+                    ]
+                },
+                "description": "Send a chat message and get response"
+            },
+            "response": []
+        },
+        {
+            "name": "Chat with Session ID",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response contains required fields\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('response');",
+                            "    pm.expect(jsonData).to.have.property('session_id');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"query\": \"Can you remember what we discussed earlier?\",\n    \"session_id\": \"{{session_id}}\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/chat",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "chat"
+                    ]
+                },
+                "description": "Send a chat message with specific session ID"
+            },
+            "response": []
+        },
+        {
+            "name": "Create Session",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Session created successfully\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('session_id');",
+                            "    pm.expect(jsonData).to.have.property('title');",
+                            "});",
+                            "",
+                            "// Store the new session_id",
+                            "var jsonData = pm.response.json();",
+                            "if (jsonData.session_id) {",
+                            "    pm.globals.set(\"new_session_id\", jsonData.session_id);",
+                            "}"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"title\": \"My New Chat Session\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/sessions",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "sessions"
+                    ]
+                },
+                "description": "Create a new chat session"
+            },
+            "response": []
+        },
+        {
+            "name": "List Sessions",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response is an array\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.be.an('array');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/sessions",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "sessions"
+                    ]
+                },
+                "description": "List all chat sessions"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Session Details",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Session details are present\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('id');",
+                            "    pm.expect(jsonData).to.have.property('title');",
+                            "    pm.expect(jsonData).to.have.property('message_count');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/sessions/{{session_id}}",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "sessions",
+                        "{{session_id}}"
+                    ]
+                },
+                "description": "Get detailed information about a specific session"
+            },
+            "response": []
+        },
+        {
+            "name": "Switch Session",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Session switched successfully\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('message');",
+                            "    pm.expect(jsonData).to.have.property('session_id');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": ""
+                },
+                "url": {
+                    "raw": "{{base_url}}/sessions/{{session_id}}/switch",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "sessions",
+                        "{{session_id}}",
+                        "switch"
+                    ]
+                },
+                "description": "Switch to a specific session"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Session Messages",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Messages are present\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('session_id');",
+                            "    pm.expect(jsonData).to.have.property('messages');",
+                            "    pm.expect(jsonData.messages).to.be.an('array');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/sessions/{{session_id}}/messages?limit=20",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "sessions",
+                        "{{session_id}}",
+                        "messages"
+                    ],
+                    "query": [
+                        {
+                            "key": "limit",
+                            "value": "20"
+                        }
+                    ]
+                },
+                "description": "Get messages from a specific session"
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Session",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Session deleted successfully\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('message');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/sessions/{{new_session_id}}",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "sessions",
+                        "{{new_session_id}}"
+                    ]
+                },
+                "description": "Delete a specific session"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Available Tools",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Tools information is present\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('tools');",
+                            "    pm.expect(jsonData).to.have.property('count');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/tools",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "tools"
+                    ]
+                },
+                "description": "Get list of available MCP tools"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Available Prompts",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Prompts information is present\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('prompts');",
+                            "    pm.expect(jsonData).to.have.property('count');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/prompts",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "prompts"
+                    ]
+                },
+                "description": "Get list of available MCP prompts"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Available Resources",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Resources information is present\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('resources');",
+                            "    pm.expect(jsonData).to.have.property('total_count');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/resources",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "resources"
+                    ]
+                },
+                "description": "Get list of available MCP resources"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Resource",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Resource content is present\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('resource_uri');",
+                            "    pm.expect(jsonData).to.have.property('content');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"resource_uri\": \"gmail://example@gmail.com\"\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/resource",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "resource"
+                    ]
+                },
+                "description": "Get a specific resource"
+            },
+            "response": []
+        },
+        {
+            "name": "Execute Prompt",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Prompt result is present\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('prompt_name');",
+                            "    pm.expect(jsonData).to.have.property('result');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"prompt_name\": \"example_prompt\",\n    \"args\": {\n        \"param1\": \"value1\",\n        \"param2\": \"value2\"\n    }\n}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/prompt",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "prompt"
+                    ]
+                },
+                "description": "Execute a prompt with given arguments"
+            },
+            "response": []
+        },
+        {
+            "name": "Get Memory Stats",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Memory stats are present\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('total_sessions');",
+                            "    pm.expect(jsonData).to.have.property('total_messages');",
+                            "    pm.expect(jsonData).to.have.property('active_tools');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{base_url}}/memory/stats",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "memory",
+                        "stats"
+                    ]
+                },
+                "description": "Get memory and session statistics"
+            },
+            "response": []
+        },
+        {
+            "name": "Clear Current Session",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Session cleared successfully\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('message');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": ""
+                },
+                "url": {
+                    "raw": "{{base_url}}/memory/clear-current",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "memory",
+                        "clear-current"
+                    ]
+                },
+                "description": "Clear messages in current session"
+            },
+            "response": []
+        },
+        {
+            "name": "Save Memory",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Memory saved successfully\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.have.property('message');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": ""
+                },
+                "url": {
+                    "raw": "{{base_url}}/memory/save",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "memory",
+                        "save"
+                    ]
+                },
+                "description": "Manually trigger memory save"
+            },
+            "response": []
+        }
+    ],
+    "event": [
+        {
+            "listen": "prerequest",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        },
+        {
+            "listen": "test",
+            "script": {
+                "type": "text/javascript",
+                "exec": [
+                    ""
+                ]
+            }
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8000",
+            "type": "string"
+        },
+        {
+            "key": "session_id",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "new_session_id",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}
